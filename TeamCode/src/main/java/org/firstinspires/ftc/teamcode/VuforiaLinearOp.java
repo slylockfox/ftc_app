@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Created by matt on 10/10/16.
  */
 
-@Autonomous(name="Vuforia Rotate to Center", group = "Test")
+@Autonomous(name="Vuforia Swerve to Center", group = "Test")
 public class VuforiaLinearOp extends LinearOpMode {
 
     MattHardwarePushbotReverse     robot   = new MattHardwarePushbotReverse();   // Use a Pushbot's hardware
