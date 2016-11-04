@@ -20,7 +20,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @Autonomous(name="Vuforia Swerve to Center", group = "Test")
-public class VuforiaLinearOp extends LinearOpMode {
+public class MattUselessVuforiaLinearOp extends LinearOpMode {
+
+    static final double     FULLSPEED             = 0.3;
+    static final double     HALFSPEED             = 0.2;
 
     MattHardwarePushbotReverse     robot   = new MattHardwarePushbotReverse();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
@@ -79,14 +82,14 @@ public class VuforiaLinearOp extends LinearOpMode {
                 double leftSpeed = 0, rightSpeed = 0;
                 if (distance > 300) {
                     if (Math.abs(degreesToTurn) < 20) { // drive straight
-                        leftSpeed = 0.1;
-                        rightSpeed = 0.1;
-                    } else if (degreesToTurn > 0) { // veer right
-                        leftSpeed = 0.15;
-                        rightSpeed = 0.1;
-                    } else if (degreesToTurn < 0) { // veer left
-                        leftSpeed = 0.1;
-                        rightSpeed = 0.15;
+                        leftSpeed = HALFSPEED;
+                        rightSpeed = HALFSPEED;
+                    } else if (degreesToTurn < 0) { // veer right
+                        leftSpeed = FULLSPEED;
+                        rightSpeed = HALFSPEED;
+                    } else if (degreesToTurn > 0) { // veer left
+                        leftSpeed = HALFSPEED;
+                        rightSpeed = FULLSPEED;
                     }
                 }
                 telemetry.addData("Left Speed", leftSpeed);
