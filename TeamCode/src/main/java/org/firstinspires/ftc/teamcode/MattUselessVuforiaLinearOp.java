@@ -19,13 +19,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Created by matt on 10/10/16.
  */
 
-@Autonomous(name="Vuforia Swerve to Center", group = "Test")
+@Autonomous(name="Matt Vuforia Chase Wheels", group = "Uselessbot")
 public class MattUselessVuforiaLinearOp extends LinearOpMode {
 
     static final double     FULLSPEED             = 0.3;
     static final double     HALFSPEED             = 0.2;
 
-    MattHardwarePushbotReverse     robot   = new MattHardwarePushbotReverse();   // Use a Pushbot's hardware
+    MattHardwarePushbot     robot   = new MattHardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override

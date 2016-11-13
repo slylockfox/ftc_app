@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 @Autonomous(name="Vuforia test", group = "Test")
 public class VuforiaOp extends LinearOpMode {
 
-    MattHardwarePushbotReverse     robot   = new MattHardwarePushbotReverse();   // Use a Pushbot's hardware
+    MattHardwarePushbot     robot   = new MattHardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override

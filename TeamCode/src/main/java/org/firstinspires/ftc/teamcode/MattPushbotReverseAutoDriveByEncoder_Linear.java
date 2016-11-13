@@ -64,11 +64,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Matt Pushbot Reverse: By Encoder", group="Pushbot")
+@Autonomous(name="Matt Pushbot Reverse", group="Pushbot")
 public class MattPushbotReverseAutoDriveByEncoder_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
-    MattHardwarePushbotReverse     robot   = new MattHardwarePushbotReverse();   // Use a Pushbot's hardware
+    MattHardwarePushbot     robot   = new MattHardwarePushbot();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
@@ -111,8 +111,8 @@ public class MattPushbotReverseAutoDriveByEncoder_Linear extends LinearOpMode {
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         encoderDrive(DRIVE_SPEED,  10,  10, 10.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   -4.5, 4.5, 10.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, 10, 10, 10.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        //encoderDrive(TURN_SPEED,   -4.5, 4.5, 10.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        //encoderDrive(DRIVE_SPEED, 10, 10, 10.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
         //robot.leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
         //robot.rightClaw.setPosition(0.0);
@@ -164,7 +164,7 @@ public class MattPushbotReverseAutoDriveByEncoder_Linear extends LinearOpMode {
                    (robot.leftMotor.isBusy() && robot.rightMotor.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%  7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
                 telemetry.addData("Path2",  "Running at %7d :%7d",
                                             robot.leftMotor.getCurrentPosition(),
                                             robot.rightMotor.getCurrentPosition());
