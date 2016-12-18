@@ -14,8 +14,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 
-@TeleOp(name="Matt Caroline Chase IR", group="Caroline")
-public class MattCarolineChaseIR extends OpMode{
+@TeleOp(name="Chase IR", group="Caroline")
+public class CarolineChaseIR extends OpMode{
     private DcMotor motorLeft, motorRight;
     private DcMotor motorLinearScissor, motorScrewScissor;
     private TouchSensor touchBottomStop, touchTopStop;

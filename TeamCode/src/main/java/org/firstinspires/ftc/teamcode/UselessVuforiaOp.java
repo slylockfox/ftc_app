@@ -7,7 +7,6 @@ import com.vuforia.HINT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -19,10 +18,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Created by matt on 10/10/16.
  */
 
-@Autonomous(name="Vuforia test", group = "Test")
-public class VuforiaOp extends LinearOpMode {
+@Autonomous(name="Vuforia test", group = "Uselessbot")
+public class UselessVuforiaOp extends LinearOpMode {
 
-    MattHardwarePushbot     robot   = new MattHardwarePushbot();   // Use a Pushbot's hardware
+    HardwareUselessPushbot robot   = new HardwareUselessPushbot();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override

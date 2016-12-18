@@ -33,13 +33,9 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -68,11 +64,11 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Matt Pushbot Forward", group="Pushbot")
-public class MattPushbotAutoDriveByEncoder_Linear extends LinearOpMode {
+@Autonomous(name="Pushbot Reverse", group="Caroline")
+public class CarolineAutoReverseDriveByEncoder_Linear extends LinearOpMode {
 
     /* Declare OpMode members. */
-    MattHardwarePushbot     robot   = new MattHardwarePushbot();   // Use a Pushbot's hardware
+    HardwareCarolinePushbot robot   = new HardwareCarolinePushbot();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
@@ -120,9 +116,6 @@ public class MattPushbotAutoDriveByEncoder_Linear extends LinearOpMode {
 
         //robot.leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
         //robot.rightClaw.setPosition(0.0);
-
-        //robot.rightMotor.setPower(.5);
-
         sleep(1000);     // pause for servos to move
 
         telemetry.addData("Path", "Complete");
@@ -168,7 +161,7 @@ public class MattPushbotAutoDriveByEncoder_Linear extends LinearOpMode {
             // keep looping while we are still active, and there is time left, and both motors are running.
             while (opModeIsActive() &&
                    (runtime.seconds() < timeoutS) &&
-                   (robot.leftMotor.isBusy() || robot.rightMotor.isBusy())) {
+                   (robot.leftMotor.isBusy() && robot.rightMotor.isBusy())) {
 
                 // Display it for the driver.
                 telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);

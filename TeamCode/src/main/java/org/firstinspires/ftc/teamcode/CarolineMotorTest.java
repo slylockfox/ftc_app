@@ -2,17 +2,16 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 /**
  * Created by matt on 11/12/16.
  */
 
-@Autonomous(name="Matt Motor Test", group="Pushbot")
-public class MattMotorTest extends LinearOpMode {
+@Autonomous(name="Motor Test", group="Caroline")
+public class CarolineMotorTest extends LinearOpMode {
 
     //private DcMotor motorLeft, motorRight;
-    MattHardwarePushbot     robot   = new MattHardwarePushbot();
+    HardwareCarolinePushbot robot   = new HardwareCarolinePushbot();
 
 
     @Override

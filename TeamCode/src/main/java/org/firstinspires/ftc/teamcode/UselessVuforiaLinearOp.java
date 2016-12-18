@@ -20,12 +20,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @Autonomous(name="Matt Vuforia Chase Wheels", group = "Uselessbot")
-public class MattUselessVuforiaLinearOp extends LinearOpMode {
+public class UselessVuforiaLinearOp extends LinearOpMode {
 
     static final double     FULLSPEED             = 0.3;
     static final double     HALFSPEED             = 0.2;
 
-    MattHardwarePushbot     robot   = new MattHardwarePushbot();   // Use a Pushbot's hardware
+    HardwareCarolinePushbot robot   = new HardwareCarolinePushbot();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
