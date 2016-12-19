@@ -8,6 +8,15 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.Range;
 
+import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_FRONT;
+import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_LEFT;
+import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_LEFT_POWER;
+import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_REAR;
+import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_RIGHT;
+import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_RIGHT_POWER;
+import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_STOP_POWER;
+import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_TOLERANCE;
+
 /**
  * This file provides basic Telop driving for a Pushbot robot.
  * The code is structured as an Iterative OpMode
@@ -23,12 +32,12 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Useless Pushbot Teleop Tank", group="Uselessbot")
-@Disabled
-public class UselessPushbotTeleopTank extends OpMode{
+@TeleOp(name="Uselessbot Teleop", group="Uselessbot")
+//@Disabled
+public class UselessbotTeleop extends OpMode{
 
     /* Declare OpMode members. */
-    HardwareUselessPushbot robot       = new HardwareUselessPushbot(); // use the class created to define a Pushbot's hardware
+    HardwareUselessbot robot       = new HardwareUselessbot(); // use the class created to define a Pushbot's hardware
     // could also use HardwarePushbotMatrix class.
     double          clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
@@ -77,29 +86,28 @@ public class UselessPushbotTeleopTank extends OpMode{
         robot.leftMotor.setPower(left);
         robot.rightMotor.setPower(right);
 
-        // Use gamepad left & right Bumpers to open and close the claw
+        // Use gamepad left & right Bumpers to swivel
         if (gamepad1.right_bumper)
-            clawOffset += CLAW_SPEED;
+            robot.swivelServo.setPower(ARM_RIGHT_POWER);
         else if (gamepad1.left_bumper)
-            clawOffset -= CLAW_SPEED;
+            robot.swivelServo.setPower(ARM_LEFT_POWER);
 
-        // Move both servos to new position.  Assume servos are mirror image of each other.
-        clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-        robot.leftClaw.setPosition(robot.MID_SERVO + clawOffset);
-        robot.rightClaw.setPosition(robot.MID_SERVO - clawOffset);
+        // use gamepad D buttons to swing to specific compass points
+        else if (gamepad1.dpad_up)
+            robot.swivelServo.setPower(powerToPosition(ARM_FRONT));
+        else if (gamepad1.dpad_right)
+            robot.swivelServo.setPower(powerToPosition(ARM_RIGHT));
+        else if (gamepad1.dpad_down)
+            robot.swivelServo.setPower(powerToPosition(ARM_REAR));
+        else if (gamepad1.dpad_left)
+            robot.swivelServo.setPower(powerToPosition(ARM_LEFT));
 
-        // Use gamepad buttons to move the arm up (Y) and down (A)
-        /* MJS was...
-        if (gamepad1.y)
-            robot.armMotor.setPower(robot.ARM_UP_POWER);
-        else if (gamepad1.a)
-            robot.armMotor.setPower(robot.ARM_DOWN_POWER);
+        // no buttons; stop swivel
         else
-            robot.armMotor.setPower(0.0);
-            */
+            robot.swivelServo.setPower(ARM_STOP_POWER);
 
         // Send telemetry message to signify robot running;
-        telemetry.addData("claw",  "Offset = %.2f", clawOffset);
+        telemetry.addData("PercentRot", "percent: " + Double.toString(armPosition()));
         telemetry.addData("left",  "%.2f", left);
         telemetry.addData("right", "%.2f", right);
         updateTelemetry(telemetry);
@@ -110,6 +118,28 @@ public class UselessPushbotTeleopTank extends OpMode{
      */
     @Override
     public void stop() {
+    }
+
+    private double armPosition() {
+        double voltreading = (float) robot.potentiometer.getVoltage();
+        double percentTurned = voltreading/5 * 100;
+        return percentTurned;
+    }
+
+    private double powerToPosition(double target) {
+        double currentPos = armPosition();
+        double result = ARM_STOP_POWER;
+        if (Math.abs(currentPos - target) > ARM_TOLERANCE) {
+            if (currentPos > ARM_LEFT) { // don't swing any further right; go back
+                result = ARM_LEFT_POWER;
+            } else { // ok to swing either way
+                if (target > currentPos)
+                    result = ARM_RIGHT_POWER;
+                else
+                    result = ARM_LEFT_POWER;
+            }
+        }
+        return result;
     }
 
 }
