@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -29,11 +31,13 @@ public class HardwareUselessbot
     public DcMotor  leftMotor   = null;
     public DcMotor  rightMotor  = null;
     public CRServo swivelServo = null;
+    public Servo    buttonPusher    = null;
     public AnalogInput potentiometer = null;
+    public ColorSensor colorSensor = null;
+    public ModernRoboticsI2cRangeSensor rangeSensor = null;
 
-    public static final double MID_SERVO       =  0.5 ;
-    public static final double ARM_UP_POWER    =  0.45 ;
-    public static final double ARM_DOWN_POWER  = -0.45 ;
+    public static final double PUSHER_RETRACT   =  0.5 ;
+    public static final double PUSHER_EXTEND   =  0.2 ;
     public static final double ARM_STOP_POWER    =  0.0 ;
     public static final double ARM_RIGHT_POWER  = 1.0 ;
     public static final double ARM_LEFT_POWER  = -1.0 ;
@@ -75,9 +79,14 @@ public class HardwareUselessbot
 
         // Define and initialize ALL installed servos.
         swivelServo = hwMap.crservo.get("swivel");
+        buttonPusher = hwMap.servo.get("pusher");
+        buttonPusher.setPosition(PUSHER_RETRACT);
 
         // Sensors
+        rangeSensor = hwMap.get(ModernRoboticsI2cRangeSensor.class, "range");
         potentiometer = hwMap.analogInput.get("potentiometer");
+        colorSensor = hwMap.colorSensor.get("color");
+        colorSensor.enableLed(false);
     }
 
     /***
@@ -99,6 +108,28 @@ public class HardwareUselessbot
 
         // Reset the cycle clock for the next pass.
         period.reset();
+    }
+
+    public double armPosition() {
+        double voltreading = (float) potentiometer.getVoltage();
+        double percentTurned = voltreading/5 * 100;
+        return percentTurned;
+    }
+
+    public double powerToPosition(double target) {
+        double currentPos = armPosition();
+        double result = ARM_STOP_POWER;
+        if (Math.abs(currentPos - target) > ARM_TOLERANCE) {
+            if (currentPos > ARM_LEFT) { // don't swing any further right; go back
+                result = ARM_LEFT_POWER;
+            } else { // ok to swing either way
+                if (target > currentPos)
+                    result = ARM_RIGHT_POWER;
+                else
+                    result = ARM_LEFT_POWER;
+            }
+        }
+        return result;
     }
 }
 

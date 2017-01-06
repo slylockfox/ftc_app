@@ -42,7 +42,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
  */
 @Autonomous(name="Test CR Servo", group ="Uselessbot")
 //@Disabled
-public class UselessContServoTest extends LinearOpMode
+public class UselessTestContServo extends LinearOpMode
 {
     @Override
     public void runOpMode() throws InterruptedException

@@ -94,22 +94,24 @@ public class UselessbotTeleop extends OpMode{
 
         // use gamepad D buttons to swing to specific compass points
         else if (gamepad1.dpad_up)
-            robot.swivelServo.setPower(powerToPosition(ARM_FRONT));
+            robot.swivelServo.setPower(robot.powerToPosition(ARM_FRONT));
         else if (gamepad1.dpad_right)
-            robot.swivelServo.setPower(powerToPosition(ARM_RIGHT));
+            robot.swivelServo.setPower(robot.powerToPosition(ARM_RIGHT));
         else if (gamepad1.dpad_down)
-            robot.swivelServo.setPower(powerToPosition(ARM_REAR));
+            robot.swivelServo.setPower(robot.powerToPosition(ARM_REAR));
         else if (gamepad1.dpad_left)
-            robot.swivelServo.setPower(powerToPosition(ARM_LEFT));
+            robot.swivelServo.setPower(robot.powerToPosition(ARM_LEFT));
 
         // no buttons; stop swivel
         else
             robot.swivelServo.setPower(ARM_STOP_POWER);
 
         // Send telemetry message to signify robot running;
-        telemetry.addData("PercentRot", "percent: " + Double.toString(armPosition()));
+        telemetry.addData("PercentRot", "percent: " + Double.toString(robot.armPosition()));
         telemetry.addData("left",  "%.2f", left);
         telemetry.addData("right", "%.2f", right);
+        telemetry.addData("encoders",  "%7d - %7d",
+                robot.leftMotor.getCurrentPosition(), robot.rightMotor.getCurrentPosition());
         updateTelemetry(telemetry);
     }
 
@@ -120,26 +122,6 @@ public class UselessbotTeleop extends OpMode{
     public void stop() {
     }
 
-    private double armPosition() {
-        double voltreading = (float) robot.potentiometer.getVoltage();
-        double percentTurned = voltreading/5 * 100;
-        return percentTurned;
-    }
 
-    private double powerToPosition(double target) {
-        double currentPos = armPosition();
-        double result = ARM_STOP_POWER;
-        if (Math.abs(currentPos - target) > ARM_TOLERANCE) {
-            if (currentPos > ARM_LEFT) { // don't swing any further right; go back
-                result = ARM_LEFT_POWER;
-            } else { // ok to swing either way
-                if (target > currentPos)
-                    result = ARM_RIGHT_POWER;
-                else
-                    result = ARM_LEFT_POWER;
-            }
-        }
-        return result;
-    }
 
 }

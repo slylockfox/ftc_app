@@ -50,16 +50,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  *
  * @see <a href="http://modernroboticsinc.com/range-sensor">MR Range Sensor</a>
  */
-@Autonomous(name = "Sensor: MR range sensor", group = "Sensor")
+@Autonomous(name = "Test MR range sensor", group = "Uselessbot")
 //@Disabled   // comment out or remove this line to enable this opmode
-public class UselessMRRangeSensor extends LinearOpMode {
+public class UselessTestMRRangeSensor extends LinearOpMode {
 
     ModernRoboticsI2cRangeSensor rangeSensor;
 
     @Override public void runOpMode() throws InterruptedException {
 
         // get a reference to our compass
-        rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range sensor");
+        rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
 
         // wait for the start button to be pressed
         waitForStart();

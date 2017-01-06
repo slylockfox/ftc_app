@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * Created by matt on 11/12/16.
  */
 
-@Autonomous(name="Motor Test", group="Caroline")
+@Autonomous(name="Test Motors", group="Caroline")
 public class CarolineMotorTest extends LinearOpMode {
 
     //private DcMotor motorLeft, motorRight;

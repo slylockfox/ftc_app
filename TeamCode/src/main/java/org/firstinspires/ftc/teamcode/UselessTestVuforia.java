@@ -18,8 +18,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Created by matt on 10/10/16.
  */
 
-@Autonomous(name="Vuforia test", group = "Uselessbot")
-public class UselessVuforiaOp extends LinearOpMode {
+@Autonomous(name="Test Vuforia", group = "Uselessbot")
+public class UselessTestVuforia extends LinearOpMode {
 
     HardwareUselessPushbot robot   = new HardwareUselessPushbot();   // Use a Pushbot's hardware
     private ElapsedTime runtime = new ElapsedTime();

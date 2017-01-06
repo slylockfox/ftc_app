@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @Autonomous(name="Vuforia Chase Wheels", group = "Uselessbot")
-public class UselessVuforiaLinearOp extends LinearOpMode {
+public class UselessTestVuforiaLinearOp extends LinearOpMode {
 
     static final double     FULLSPEED             = 0.3;
     static final double     HALFSPEED             = 0.2;

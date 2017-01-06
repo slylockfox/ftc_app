@@ -23,9 +23,9 @@
  * See https://www.adafruit.com/product/562
  *
  */
-@TeleOp(name = "Sensor: Generic Potentiometer", group = "Uselessbot")
+@TeleOp(name = "Test Potentiometer", group = "Uselessbot")
 //@Disabled
-public class UselessPotLinearOpMode extends LinearOpMode {
+public class UselessTestPotentiometer extends LinearOpMode {
 
 
     /*
