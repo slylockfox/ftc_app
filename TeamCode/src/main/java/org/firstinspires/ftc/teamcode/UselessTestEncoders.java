@@ -64,11 +64,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Test Encoders", group="Caroline")
+@Autonomous(name="Test Encoders", group="Uselessbot")
 public class UselessTestEncoders extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareCarolinePushbot robot   = new HardwareCarolinePushbot();   // Use a Pushbot's hardware
+    HardwareUselessbot robot   = new HardwareUselessbot();   // Use a Pushbot's hardware
     private ElapsedTime     runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
