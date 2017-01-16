@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cIrSeekerSensorV3;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -31,21 +33,25 @@ public class HardwareUselessbot
     public DcMotor  leftMotor   = null;
     public DcMotor  rightMotor  = null;
     public CRServo swivelServo = null;
+    public Servo shoulderServo = null;
     public Servo    buttonPusher    = null;
     public AnalogInput potentiometer = null;
     public ColorSensor colorSensor = null;
     public ModernRoboticsI2cRangeSensor rangeSensor = null;
+    public IrSeekerSensor irSeekerH;
 
     public static final double PUSHER_RETRACT   =  0.5 ;
     public static final double PUSHER_EXTEND   =  0.2 ;
     public static final double ARM_STOP_POWER    =  0.0 ;
     public static final double ARM_RIGHT_POWER  = 1.0 ;
     public static final double ARM_LEFT_POWER  = -1.0 ;
+    public static final double SHOULDER_LEVEL = .15;
     public static final double ARM_FRONT = 34.3;
     public static final double ARM_RIGHT = 38.1;
-    public static final double ARM_REAR = 41.7;
-    public static final double ARM_LEFT = 45.6;
+    public static final double ARM_REAR = 27.7;
+    public static final double ARM_LEFT = 30.4;
     public static final double ARM_TOLERANCE = 0.2;
+    public static final double IR_ANGLE_TOLERANCE = 70;
 
 
     /* local OpMode members. */
@@ -81,12 +87,21 @@ public class HardwareUselessbot
         swivelServo = hwMap.crservo.get("swivel");
         buttonPusher = hwMap.servo.get("pusher");
         buttonPusher.setPosition(PUSHER_RETRACT);
+        shoulderServo = hwMap.servo.get("shoulder");
+        shoulderServo.setPosition(SHOULDER_LEVEL);
 
         // Sensors
         rangeSensor = hwMap.get(ModernRoboticsI2cRangeSensor.class, "range");
         potentiometer = hwMap.analogInput.get("potentiometer");
         colorSensor = hwMap.colorSensor.get("color");
         colorSensor.enableLed(false);
+        irSeekerH = hwMap.irSeekerSensor.get("seekerH");
+
+        // one IR sensor has had address changed
+        // seekerHorizontal = hwMap.irSeekerSensor.get("seekerH");
+        //seekerVertical = hwMap.irSeekerSensor.get("seekerV");
+        //seekerVertical.setI2cAddress(0x3a);
+
     }
 
     /***
@@ -116,12 +131,27 @@ public class HardwareUselessbot
         return percentTurned;
     }
 
+    public double IRMovement() {
+        double currentPos = armPosition();
+        double angle = irSeekerH.getAngle();
+        double result = ARM_STOP_POWER;
+        if (Math.abs(angle) > IR_ANGLE_TOLERANCE) {
+            if (angle > 0 && currentPos < ARM_RIGHT)
+                result = ARM_RIGHT_POWER;
+            else if (currentPos > ARM_REAR)
+                result = ARM_LEFT_POWER;
+        }
+        return result;
+    }
+
     public double powerToPosition(double target) {
         double currentPos = armPosition();
         double result = ARM_STOP_POWER;
         if (Math.abs(currentPos - target) > ARM_TOLERANCE) {
-            if (currentPos > ARM_LEFT) { // don't swing any further right; go back
+            if (currentPos > ARM_RIGHT) { // don't swing any further right; go back
                 result = ARM_LEFT_POWER;
+            } else if (currentPos < ARM_REAR) { // don't swing any further left; go back
+                result = ARM_RIGHT_POWER;
             } else { // ok to swing either way
                 if (target > currentPos)
                     result = ARM_RIGHT_POWER;

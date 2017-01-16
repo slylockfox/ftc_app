@@ -16,6 +16,8 @@ import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_RIGHT;
 import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_RIGHT_POWER;
 import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_STOP_POWER;
 import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_TOLERANCE;
+import static org.firstinspires.ftc.teamcode.HardwareUselessbot.IR_ANGLE_TOLERANCE;
+import static org.firstinspires.ftc.teamcode.HardwareUselessbot.SHOULDER_LEVEL;
 
 /**
  * This file provides basic Telop driving for a Pushbot robot.
@@ -39,8 +41,13 @@ public class UselessbotTeleop extends OpMode{
     /* Declare OpMode members. */
     HardwareUselessbot robot       = new HardwareUselessbot(); // use the class created to define a Pushbot's hardware
     // could also use HardwarePushbotMatrix class.
-    double          clawOffset  = 0.0 ;                  // Servo mid position
-    final double    CLAW_SPEED  = 0.02 ;                 // sets rate to move servo
+    double          shoulderPos  = SHOULDER_LEVEL ;                  // Servo mid position
+    final double          shoulderInc = 0.008;
+    //final double swivelInc = 0.01;
+    double shoulderTime= 0.0;
+    double swivelTime = 0.0;
+    final double shoulderTimeDelay = 0.1;
+    final double swivelTimeDelay = 0.1;
 
 
     /*
@@ -102,11 +109,42 @@ public class UselessbotTeleop extends OpMode{
         else if (gamepad1.dpad_left)
             robot.swivelServo.setPower(robot.powerToPosition(ARM_LEFT));
 
-        // no buttons; stop swivel
-        else
+        // no buttons; check for IR
+        else if (robot.irSeekerH.signalDetected()) {
+            robot.swivelServo.setPower(robot.IRMovement());
+        }
+//        else if (robot.irSeekerH.signalDetected()) {
+//            telemetry.addData("AngleH",    robot.irSeekerH.getAngle());
+//            if (getRuntime() > swivelTime + swivelTimeDelay) {
+//                robot.swivelServo.setPower(ARM_STOP_POWER);
+//                swivelTime = getRuntime();
+//            } else {
+//                robot.swivelServo.setPower(robot.IRMovement());
+//            }
+//            double angle = robot.irSeekerH.getAngle();
+//            if (Math.abs(angle) > IR_ANGLE_TOLERANCE) {
+//                double newPos = robot.armPosition();
+//                newPos = angle > 0 ? newPos + swivelInc : newPos - swivelInc;
+//                robot.swivelServo.setPower(robot.powerToPosition(newPos));
+//                swivelTime = getRuntime();
+//            }
+
+
+        // use A (green) and Y (yellow) to raise and lower shoulder
+        else if (gamepad1.y && getRuntime() > shoulderTime + shoulderTimeDelay) {
+            robot.shoulderServo.setPosition(shoulderPos += shoulderInc);
+            shoulderTime = getRuntime();
+        } else if (gamepad1.a && getRuntime() > shoulderTime + shoulderTimeDelay) {
+            robot.shoulderServo.setPosition(shoulderPos -= shoulderInc);
+            shoulderTime = getRuntime();
+        }
+
+        else { // no buttons or IR; stop swivel
             robot.swivelServo.setPower(ARM_STOP_POWER);
+        }
 
         // Send telemetry message to signify robot running;
+        telemetry.addData("AngleH",    robot.irSeekerH.getAngle());
         telemetry.addData("PercentRot", "percent: " + Double.toString(robot.armPosition()));
         telemetry.addData("left",  "%.2f", left);
         telemetry.addData("right", "%.2f", right);
