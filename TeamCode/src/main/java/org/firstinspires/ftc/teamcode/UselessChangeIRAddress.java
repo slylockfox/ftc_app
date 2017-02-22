@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 import com.qualcomm.robotcore.util.RobotLog;
 import com.qualcomm.robotcore.util.TypeConversion;
 
@@ -56,7 +57,7 @@ public class UselessChangeIRAddress extends LinearOpMode {
     public static final byte TRIGGER_BYTE_2 = (byte) 0xaa;
 
     // Expected bytes from the Modern Robotics IR Seeker V3 memory map
-    public static final byte IR_SEEKER_V3_FIRMWARE_REV = 0x12;
+    public static final byte IR_SEEKER_V3_FIRMWARE_REV = 0x14; // was 0x12
     public static final byte IR_SEEKER_V3_SENSOR_ID = 0x49;
     public static final I2cAddr IR_SEEKER_V3_ORIGINAL_ADDRESS = I2cAddr.create8bit(0x38);
 
@@ -131,19 +132,16 @@ public class UselessChangeIRAddress extends LinearOpMode {
         // make sure the first bytes are what we think they should be.
         int count = 0;
         int[] initialArray = {READ_MODE, currentAddress.get8Bit(), ADDRESS_MEMORY_START, TOTAL_MEMORY_LENGTH, FIRMWARE_REV, MANUFACTURER_CODE, SENSOR_ID};
-        while (!foundExpectedBytes(initialArray, readLock, readCache)) {
-            telemetry.addData("I2cAddressChange", "Confirming that we're reading the correct bytes...");
-            telemetry.update();
-            dim.readI2cCacheFromController(port);
+        String mismatch = null; do {
+            mismatch = foundExpectedBytes(initialArray, readLock, readCache);
+            telemetry.addData("I2cAddressChange", "Confirming that we're reading the correct bytes, current address: 0x%02x", currentAddress.get8Bit());
+             dim.readI2cCacheFromController(port);
             sleep(1000);
             count++;
             // if we go too long with failure, we probably are expecting the wrong bytes.
-            if (count >= 10)  {
-                telemetry.addData("I2cAddressChange", String.format("Looping too long with no change, probably have the wrong address. Current address: 0x%02x", currentAddress));
-                hardwareMap.irSeekerSensor.get(String.format("Looping too long with no change, probably have the wrong address. Current address: 0x%02x", currentAddress));
-                telemetry.update();
-            }
-        }
+            telemetry.addData("I2cAddressChange", mismatch);
+            telemetry.update();
+        } while (mismatch != null);
 
         // Enable writes to the correct segment of the memory map.
         performAction("write", port, currentAddress, ADDRESS_SET_NEW_I2C_ADDRESS, BUFFER_CHANGE_ADDRESS_LENGTH);
@@ -165,16 +163,28 @@ public class UselessChangeIRAddress extends LinearOpMode {
         dim.writeI2cCacheToController(port);
 
         int[] confirmArray = {READ_MODE, newAddress.get8Bit(), ADDRESS_MEMORY_START, TOTAL_MEMORY_LENGTH, FIRMWARE_REV, MANUFACTURER_CODE, SENSOR_ID};
-        while (!foundExpectedBytes(confirmArray, readLock, readCache)) {
+        mismatch = null; do {
+            mismatch = foundExpectedBytes(confirmArray, readLock, readCache);
             telemetry.addData("I2cAddressChange", "Have not confirmed the changes yet...");
+            telemetry.addData("I2cAddressChange", mismatch);
             telemetry.update();
             dim.readI2cCacheFromController(port);
             sleep(1000);
-        }
+        } while (mismatch != null);
 
-        telemetry.addData("I2cAddressChange", "Successfully changed the I2C address. New address: 0x%02x", newAddress);
-        telemetry.update();
-        RobotLog.i("Successfully changed the I2C address." + String.format("New address: 0x%02x", newAddress));
+        RobotLog.i("Successfully changed the I2C address." + String.format("New address: 0x%02x", newAddress.get8Bit()));
+        while (opModeIsActive()) {
+            telemetry.addData("I2cAddressChange", "Successfully changed the I2C address. New address: 0x%02x", newAddress.get8Bit());
+            IrSeekerSensor irSeekerV = hardwareMap.irSeekerSensor.get("seekerV");
+            irSeekerV.setI2cAddress(newAddress);
+            if (irSeekerV.signalDetected()) {
+                telemetry.addData("AngleV",    irSeekerV.getAngle());
+                telemetry.addData("StrengthV", irSeekerV.getStrength());
+            } else {
+                telemetry.addData("Seeker V", "Signal Lost");
+            }
+            telemetry.update();
+        }
 
         /**** IMPORTANT NOTE ******/
         // You need to add a line like this at the top of your op mode
@@ -184,7 +194,7 @@ public class UselessChangeIRAddress extends LinearOpMode {
 
     }
 
-    private boolean foundExpectedBytes(int[] byteArray, Lock lock, byte[] cache) {
+    private String foundExpectedBytes(int[] byteArray, Lock lock, byte[] cache) {
         try {
             lock.lock();
             boolean allMatch = true;
@@ -198,7 +208,7 @@ public class UselessChangeIRAddress extends LinearOpMode {
                 }
             }
             RobotLog.e(s.toString() + "\n allMatch: " + allMatch + ", mismatch: " + mismatch);
-            return allMatch;
+            return allMatch ? null : s.toString() + "\n allMatch: " + allMatch + ", mismatch: " + mismatch;
         } finally {
             lock.unlock();
         }

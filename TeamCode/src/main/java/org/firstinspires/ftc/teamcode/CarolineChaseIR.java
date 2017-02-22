@@ -25,6 +25,7 @@ public class CarolineChaseIR extends OpMode{
     private LightSensor lightSensor;
     private GyroSensor sensorGyro;
     private MattStuff mattStuff;
+    private double sonarValue = 0;
 
     private final double DEADZONE = 0.1;
     private final double IR_ANGLE_TOLERANCE = 10.0;  // degrees
@@ -69,6 +70,18 @@ public class CarolineChaseIR extends OpMode{
 
         double sbucket = 160.0/255.0;
         boolean lastTurnedRight = false;
+        int count255 = 0;
+        double sonarTemp = 0;
+
+        sonarTemp = sonar.getUltrasonicLevel();
+        if (sonarTemp == 255) {
+            if (++count255 > 5) {
+                sonarValue = 255;
+            }
+        } else {
+            sonarValue = sonarTemp;
+            count255 = 0;
+        }
 
         // extend IR stalk if dpad button pushed, or nobody is in front of robot
         // retract IR stalk if dbad button pushed, or robot is close to someone/something
@@ -76,8 +89,8 @@ public class CarolineChaseIR extends OpMode{
         boolean extendIR = false;
         if (gamepad1.dpad_down) retractIR = true;
         else if (gamepad1.dpad_up) extendIR = true;
-        else if (sonar.getUltrasonicLevel() < SONAR_THRESHOLD) retractIR = true;
-        else if (sonar.getUltrasonicLevel() >= SONAR_THRESHOLD) extendIR = true;
+        else if (sonarValue < SONAR_THRESHOLD) retractIR = true;
+        else if (sonarValue >= SONAR_THRESHOLD) extendIR = true;
 
         if(Math.abs(gamepad1.left_stick_y) > DEADZONE){
             l = -gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y);  // square it and trim it

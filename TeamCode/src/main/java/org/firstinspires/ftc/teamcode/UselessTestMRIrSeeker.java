@@ -61,11 +61,12 @@ public class UselessTestMRIrSeeker extends LinearOpMode {
     public void runOpMode() {
 
         IrSeekerSensor irSeekerH;    // Hardware Device Object
-//        IrSeekerSensor irSeekerV;
+        IrSeekerSensor irSeekerV;
 
         // get a reference to our GyroSensor object.
-//        irSeekerV = hardwareMap.irSeekerSensor.get("seekerV");
+        irSeekerV = hardwareMap.irSeekerSensor.get("seekerV");
 //        irSeekerV.setI2cAddress(I2cAddr.create7bit(0x1E));
+        irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
         irSeekerH = hardwareMap.irSeekerSensor.get("seekerH");
 
         // wait for the start button to be pressed.
@@ -85,17 +86,17 @@ public class UselessTestMRIrSeeker extends LinearOpMode {
                 // Display loss of signal
                 telemetry.addData("Seeker H", "Signal Lost");
             }
-//            if (irSeekerV.signalDetected())
-//            {
-//                // Display angle and strength
-//                telemetry.addData("AngleV",    irSeekerV.getAngle());
-//                telemetry.addData("StrengthV", irSeekerV.getStrength());
-//            }
-//            else
-//            {
-//                // Display loss of signal
-//                telemetry.addData("Seeker V", "Signal Lost");
-//            }
+            if (irSeekerV.signalDetected())
+            {
+                // Display angle and strength
+                telemetry.addData("AngleV",    irSeekerV.getAngle());
+                telemetry.addData("StrengthV", irSeekerV.getStrength());
+            }
+            else
+            {
+                // Display loss of signal
+                telemetry.addData("Seeker V", "Signal Lost");
+            }
 
             telemetry.update();
         }
