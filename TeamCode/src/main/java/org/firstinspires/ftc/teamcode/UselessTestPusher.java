@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import static org.firstinspires.ftc.teamcode.HardwareUselessbot.PUSHER_EXTEND;
@@ -11,6 +12,7 @@ import static org.firstinspires.ftc.teamcode.HardwareUselessbot.PUSHER_RETRACT;
  */
 
 @Autonomous(name="Test Pusher", group="Uselessbot")
+@Disabled
 public class UselessTestPusher extends LinearOpMode {
 
     //private DcMotor motorLeft, motorRight;

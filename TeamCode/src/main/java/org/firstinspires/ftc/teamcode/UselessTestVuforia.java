@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.vuforia.HINT;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @Autonomous(name="Test Vuforia", group = "Uselessbot")
+@Disabled
 public class UselessTestVuforia extends LinearOpMode {
 
     HardwareUselessPushbot robot   = new HardwareUselessPushbot();   // Use a Pushbot's hardware

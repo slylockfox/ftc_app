@@ -41,7 +41,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
  * A simple test of a continuous rotation servo
  */
 @Autonomous(name="Test CR Servo", group ="Uselessbot")
-//@Disabled
+@Disabled
 public class UselessTestContServo extends LinearOpMode
 {
     @Override

@@ -7,6 +7,7 @@
 
         package org.firstinspires.ftc.teamcode;
 
+        import com.qualcomm.robotcore.eventloop.opmode.Disabled;
         import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
         import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
         import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -24,7 +25,7 @@
  *
  */
 @TeleOp(name = "Test Potentiometer", group = "Uselessbot")
-//@Disabled
+@Disabled
 public class UselessTestPotentiometer extends LinearOpMode {
 
 

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -37,10 +38,13 @@ public class HardwareUselessPushbot
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
+    private boolean ReverseDriveMotors = false;
 
     /* Constructor */
     public HardwareUselessPushbot(){
-
+    }
+    public HardwareUselessPushbot(boolean reverse){
+        ReverseDriveMotors = reverse;
     }
 
     /* Initialize standard Hardware interfaces */
@@ -52,8 +56,14 @@ public class HardwareUselessPushbot
         leftMotor   = hwMap.dcMotor.get("left_drive");
         rightMotor  = hwMap.dcMotor.get("right_drive");
         // MJS was... armMotor    = hwMap.dcMotor.get("left_arm");
-        leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+
+        if (ReverseDriveMotors) {
+            leftMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+            rightMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+        } else {
+            leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+            rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        }
 
         // Set all motors to zero power
         leftMotor.setPower(0);
