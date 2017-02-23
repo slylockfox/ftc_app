@@ -26,6 +26,7 @@ public class CarolineChaseIR extends OpMode{
     private GyroSensor sensorGyro;
     private MattStuff mattStuff;
     private double sonarValue = 0;
+    int count255 = 0;
 
     private final double DEADZONE = 0.1;
     private final double IR_ANGLE_TOLERANCE = 10.0;  // degrees
@@ -70,12 +71,11 @@ public class CarolineChaseIR extends OpMode{
 
         double sbucket = 160.0/255.0;
         boolean lastTurnedRight = false;
-        int count255 = 0;
         double sonarTemp = 0;
 
         sonarTemp = sonar.getUltrasonicLevel();
         if (sonarTemp == 255) {
-            if (++count255 > 5) {
+            if (++count255 > 20) {
                 sonarValue = 255;
             }
         } else {
@@ -164,7 +164,7 @@ public class CarolineChaseIR extends OpMode{
         telemetry.addData("Right", String.format("Power:%.1f, Enc:%03d", r, mattStuff.RightCurrPosition()));
         //telemetry.addData("Screw", lV);
         //telemetry.addData("Linear", b);
-        telemetry.addData("Sonar", sonar.getUltrasonicLevel());
+        telemetry.addData("Sonar", String.format("%.1f, %.1f", sonarTemp, sonarValue));
         telemetry.addData("IR Angle", ir.getAngle());
         telemetry.addData("IR Strength", ir.getStrength());
     }

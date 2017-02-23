@@ -15,8 +15,6 @@ import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_REAR;
 import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_RIGHT;
 import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_RIGHT_POWER;
 import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_STOP_POWER;
-import static org.firstinspires.ftc.teamcode.HardwareUselessbot.ARM_TOLERANCE;
-import static org.firstinspires.ftc.teamcode.HardwareUselessbot.IR_ANGLE_TOLERANCE;
 import static org.firstinspires.ftc.teamcode.HardwareUselessbot.SHOULDER_LEVEL;
 
 /**
@@ -109,27 +107,6 @@ public class UselessbotTeleop extends OpMode{
         else if (gamepad1.dpad_left)
             robot.swivelServo.setPower(robot.powerToPosition(ARM_LEFT));
 
-        // no buttons; check for IR
-        else if (robot.irSeekerH.signalDetected()) {
-            robot.swivelServo.setPower(robot.IRMovement());
-        }
-//        else if (robot.irSeekerH.signalDetected()) {
-//            telemetry.addData("AngleH",    robot.irSeekerH.getAngle());
-//            if (getRuntime() > swivelTime + swivelTimeDelay) {
-//                robot.swivelServo.setPower(ARM_STOP_POWER);
-//                swivelTime = getRuntime();
-//            } else {
-//                robot.swivelServo.setPower(robot.IRMovement());
-//            }
-//            double angle = robot.irSeekerH.getAngle();
-//            if (Math.abs(angle) > IR_ANGLE_TOLERANCE) {
-//                double newPos = robot.armPosition();
-//                newPos = angle > 0 ? newPos + swivelInc : newPos - swivelInc;
-//                robot.swivelServo.setPower(robot.powerToPosition(newPos));
-//                swivelTime = getRuntime();
-//            }
-
-
         // use A (green) and Y (yellow) to raise and lower shoulder
         else if (gamepad1.y && getRuntime() > shoulderTime + shoulderTimeDelay) {
             robot.shoulderServo.setPosition(shoulderPos += shoulderInc);
@@ -137,6 +114,15 @@ public class UselessbotTeleop extends OpMode{
         } else if (gamepad1.a && getRuntime() > shoulderTime + shoulderTimeDelay) {
             robot.shoulderServo.setPosition(shoulderPos -= shoulderInc);
             shoulderTime = getRuntime();
+        }
+
+        // no buttons; check for IR
+        else if (robot.irSeekerH.signalDetected()) {
+            robot.swivelServo.setPower(robot.IRMovementH());
+            if (robot.irSeekerV.signalDetected() && getRuntime() > shoulderTime + shoulderTimeDelay) {
+                robot.shoulderServo.setPosition(shoulderPos += robot.IRMovementV() * shoulderInc);
+                shoulderTime = getRuntime();
+            }
         }
 
         else { // no buttons or IR; stop swivel

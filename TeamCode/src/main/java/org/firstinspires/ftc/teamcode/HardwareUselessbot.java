@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -39,6 +40,7 @@ public class HardwareUselessbot
     public ColorSensor colorSensor = null;
     public ModernRoboticsI2cRangeSensor rangeSensor = null;
     public IrSeekerSensor irSeekerH;
+    public IrSeekerSensor irSeekerV;
 
     public static final double PUSHER_RETRACT   =  0.5 ;
     public static final double PUSHER_EXTEND   =  0.2 ;
@@ -51,7 +53,8 @@ public class HardwareUselessbot
     public static final double ARM_REAR = 27.7;
     public static final double ARM_LEFT = 30.4;
     public static final double ARM_TOLERANCE = 0.2;
-    public static final double IR_ANGLE_TOLERANCE = 70;
+    public static final double IR_ANGLE_TOLERANCE_H = 70;
+    public static final double IR_ANGLE_TOLERANCE_V = 60;
 
 
     /* local OpMode members. */
@@ -91,16 +94,15 @@ public class HardwareUselessbot
         shoulderServo.setPosition(SHOULDER_LEVEL);
 
         // Sensors
-        rangeSensor = hwMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+        //rangeSensor = hwMap.get(ModernRoboticsI2cRangeSensor.class, "range");
         potentiometer = hwMap.analogInput.get("potentiometer");
-        colorSensor = hwMap.colorSensor.get("color");
-        colorSensor.enableLed(false);
+        //colorSensor = hwMap.colorSensor.get("color");
+        //colorSensor.enableLed(false);
         irSeekerH = hwMap.irSeekerSensor.get("seekerH");
+        irSeekerV = hwMap.irSeekerSensor.get("seekerV");
+        irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
 
         // one IR sensor has had address changed
-        // seekerHorizontal = hwMap.irSeekerSensor.get("seekerH");
-        //seekerVertical = hwMap.irSeekerSensor.get("seekerV");
-        //seekerVertical.setI2cAddress(0x3a);
 
     }
 
@@ -131,15 +133,25 @@ public class HardwareUselessbot
         return percentTurned;
     }
 
-    public double IRMovement() {
+    public double IRMovementH() {
         double currentPos = armPosition();
         double angle = irSeekerH.getAngle();
         double result = ARM_STOP_POWER;
-        if (Math.abs(angle) > IR_ANGLE_TOLERANCE) {
+        if (Math.abs(angle) > IR_ANGLE_TOLERANCE_H) {
             if (angle > 0 && currentPos < ARM_RIGHT)
                 result = ARM_RIGHT_POWER;
             else if (currentPos > ARM_REAR)
                 result = ARM_LEFT_POWER;
+        }
+        return result;
+    }
+
+    public double IRMovementV() { // positive, negative, or zero
+        double angle = irSeekerV.getAngle();
+        double result = 0.0;
+        if (Math.abs(angle) > IR_ANGLE_TOLERANCE_V) {
+            //result = angle < 0 ? 1 : -1;
+            result = -angle / (IR_ANGLE_TOLERANCE_V * 2);
         }
         return result;
     }

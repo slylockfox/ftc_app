@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -17,6 +18,7 @@ import static org.firstinspires.ftc.teamcode.HardwareUselessbot.PUSHER_RETRACT;
  */
 
 @Autonomous(name="Uselessbot Autonomous", group="Uselessbot")
+@Disabled
 public class UselessbotAutonomous extends LinearOpMode {
 
     HardwareUselessbot robot   = new HardwareUselessbot();

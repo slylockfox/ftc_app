@@ -47,7 +47,7 @@ import java.util.concurrent.locks.Lock;
 /**
  * An example of a linear op mode that shows how to change the I2C address.
  */
-@TeleOp(name = "Change IR Address", group = "Uselessbot")
+@TeleOp(name = "Uselessbot Change IR Address", group = "Uselessbot")
 //@Disabled
 public class UselessChangeIRAddress extends LinearOpMode {
 
@@ -151,11 +151,11 @@ public class UselessChangeIRAddress extends LinearOpMode {
         dim.setI2cPortActionFlag(port);
         dim.writeI2cCacheToController(port);
 
-        telemetry.addData("I2cAddressChange", "Giving the hardware 60 seconds to make the change...");
+        telemetry.addData("I2cAddressChange", "Giving the hardware 10 seconds to make the change...");
         telemetry.update();
 
         // Changing the I2C address takes some time.
-        sleep(60000);
+        sleep(10000);
 
         // Query the new address and see if we can get the bytes we expect.
         dim.enableI2cReadMode(port, newAddress, ADDRESS_MEMORY_START, TOTAL_MEMORY_LENGTH);
