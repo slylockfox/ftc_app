@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstInspires-FTC">
+    <MotorController name="Drive Motors" serialNumber="AL00YAJ0">
+        <Motor name="Left_Motor" port="1" />
+        <Motor name="Right_Motor" port="2" />
+    </MotorController>
+    <DeviceInterfaceModule name="Device Interface Module 2" serialNumber="AI02RINI">
+    </DeviceInterfaceModule>
+    <MotorController name="Motor Controller 3" serialNumber="AL00VTAR">
+    </MotorController>
+    <LegacyModuleController name="Legacy Module 4" serialNumber="AL00XTTT">
+    </LegacyModuleController>
+</Robot>

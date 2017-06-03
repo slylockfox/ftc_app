@@ -92,6 +92,8 @@ public class CarolineChaseIR extends OpMode{
         else if (sonarValue < SONAR_THRESHOLD) retractIR = true;
         else if (sonarValue >= SONAR_THRESHOLD) extendIR = true;
 
+        //extendIR = true;
+
         if(Math.abs(gamepad1.left_stick_y) > DEADZONE){
             l = -gamepad1.left_stick_y * Math.abs(gamepad1.left_stick_y);  // square it and trim it
             retractIR = true; extendIR = false;  // bring IR in when drivers are driving
@@ -167,5 +169,7 @@ public class CarolineChaseIR extends OpMode{
         telemetry.addData("Sonar", String.format("%.1f, %.1f", sonarTemp, sonarValue));
         telemetry.addData("IR Angle", ir.getAngle());
         telemetry.addData("IR Strength", ir.getStrength());
+        telemetry.addData("b", b);
+        telemetry.addData("extendIR", extendIR);
     }
 }
