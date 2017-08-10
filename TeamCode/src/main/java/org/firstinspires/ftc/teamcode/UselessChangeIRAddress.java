@@ -48,7 +48,7 @@ import java.util.concurrent.locks.Lock;
  * An example of a linear op mode that shows how to change the I2C address.
  */
 @TeleOp(name = "Uselessbot Change IR Address", group = "Uselessbot")
-//@Disabled
+@Disabled
 public class UselessChangeIRAddress extends LinearOpMode {
 
     public static final int ADDRESS_SET_NEW_I2C_ADDRESS = 0x70;

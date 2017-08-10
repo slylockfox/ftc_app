@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 
-@TeleOp(name="Caroline Chase IR", group="Caroline")
+@TeleOp(name="Caroline Chase IR sans Sonar", group="Caroline")
 public class CarolineIgnoreSonarChaseIR extends OpMode{
     private DcMotor motorLeft, motorRight;
     private DcMotor motorLinearScissor, motorScrewScissor;
