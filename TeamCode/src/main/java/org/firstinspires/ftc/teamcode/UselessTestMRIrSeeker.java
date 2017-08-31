@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cIrSeekerSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -38,6 +39,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 
 /*
  * This is an example LinearOpMode that shows how to use
@@ -62,11 +64,19 @@ public class UselessTestMRIrSeeker extends LinearOpMode {
 
         IrSeekerSensor irSeekerH;    // Hardware Device Object
         IrSeekerSensor irSeekerV;
+        I2cDeviceSynch irSeekerVreader;
 
-        // get a reference to our GyroSensor object.
-        irSeekerV = hardwareMap.irSeekerSensor.get("seekerV");
-//        irSeekerV.setI2cAddress(I2cAddr.create7bit(0x1E));
+        // get a reference to our IR seeker object.
+        //irSeekerV = hardwareMap.irSeekerSensor.get("seekerV");
+
+        //solution per Nick Spence and issue #360
+
+        irSeekerVreader = hardwareMap.i2cDeviceSynch.get("seekerV");
+        irSeekerV = new ModernRoboticsI2cIrSeekerSensorV3(irSeekerVreader);
         irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
+
+//        irSeekerV.setI2cAddress(I2cAddr.create7bit(0x1E));
+
         irSeekerH = hardwareMap.irSeekerSensor.get("seekerH");
 
         // wait for the start button to be pressed.

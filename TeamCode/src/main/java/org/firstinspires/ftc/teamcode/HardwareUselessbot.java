@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -41,7 +42,7 @@ public class HardwareUselessbot
     public ModernRoboticsI2cRangeSensor rangeSensor = null;
     public IrSeekerSensor irSeekerH;
     public IrSeekerSensor irSeekerV;
-
+    private I2cDeviceSynch irSeekerVreader;
     public static final double PUSHER_RETRACT   =  0.5 ;
     public static final double PUSHER_EXTEND   =  0.2 ;
     public static final double ARM_STOP_POWER    =  0.0 ;
@@ -109,7 +110,10 @@ public class HardwareUselessbot
         //colorSensor = hwMap.colorSensor.get("color");
         //colorSensor.enableLed(false);
         irSeekerH = hwMap.irSeekerSensor.get("seekerH");
-        irSeekerV = hwMap.irSeekerSensor.get("seekerV");
+
+        //solution per Nick Spence for issue #360 and two IR sensors with different addresses
+        irSeekerVreader = hwMap.i2cDeviceSynch.get("seekerV");
+        irSeekerV = new ModernRoboticsI2cIrSeekerSensorV3(irSeekerVreader);
         irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
 
         // one IR sensor has had address changed
