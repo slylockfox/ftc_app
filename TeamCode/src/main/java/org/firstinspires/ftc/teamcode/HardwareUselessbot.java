@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -40,7 +42,9 @@ public class HardwareUselessbot
     public ColorSensor colorSensor = null;
     public ModernRoboticsI2cRangeSensor rangeSensor = null;
     public IrSeekerSensor irSeekerH;
-    public IrSeekerSensor irSeekerV;
+    public ModernRoboticsI2cIrSeekerSensorV3 irSeekerV;
+    private I2cDevice irSeekerVDevice;
+    private I2cDeviceSynch irSeekerVreader;
 
     public static final double PUSHER_RETRACT   =  0.5 ;
     public static final double PUSHER_EXTEND   =  0.2 ;
@@ -68,6 +72,12 @@ public class HardwareUselessbot
 
     public HardwareUselessbot(boolean reverse){
         ReverseDriveMotors = reverse;
+    }
+
+    // "complete" solution from Nick Spence for #360, multiple same I2C sensors
+    private void setI2cAddress(ModernRoboticsI2cIrSeekerSensorV3 sensor, int addr)
+    {
+        sensor.setI2cAddress(I2cAddr.create8bit(addr));
     }
 
     /* Initialize standard Hardware interfaces */
@@ -109,10 +119,16 @@ public class HardwareUselessbot
         //colorSensor = hwMap.colorSensor.get("color");
         //colorSensor.enableLed(false);
         irSeekerH = hwMap.irSeekerSensor.get("seekerH");
-        irSeekerV = hwMap.irSeekerSensor.get("seekerV");
-        irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
+        //irSeekerV = hwMap.irSeekerSensor.get("seekerV");
+        //irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
+
+        // "complete" solution from Nick Spence for #360, multiple same I2C sensors
+        irSeekerVDevice = hwMap.i2cDevice.get("seekerV");
+        irSeekerVreader = new I2cDeviceSynchImpl2(irSeekerVDevice, I2cAddr.create8bit(0x0), false);
+        irSeekerV = new ModernRoboticsI2cIrSeekerSensorV3(irSeekerVreader);
 
         // one IR sensor has had address changed
+        setI2cAddress(irSeekerV, 0x42);  // "complete" solution from Nick Spence for #360, multiple same I2C sensors
 
     }
 

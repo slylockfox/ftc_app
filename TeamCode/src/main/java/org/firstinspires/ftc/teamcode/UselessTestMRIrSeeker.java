@@ -31,12 +31,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cIrSeekerSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 
 /*
@@ -57,20 +60,38 @@ import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 //@Disabled
 public class UselessTestMRIrSeeker extends LinearOpMode {
 
+    // "complete" solution from Nick Spence for #360, multiple same I2C sensors
+    private void setI2cAddress(ModernRoboticsI2cIrSeekerSensorV3 sensor, int addr)
+    {
+        sensor.setI2cAddress(I2cAddr.create8bit(addr));
+    }
+
     @Override
     public void runOpMode() {
 
-        IrSeekerSensor irSeekerH;    // Hardware Device Object
-        IrSeekerSensor irSeekerV;
+        IrSeekerSensor  irSeekerH;    // Hardware Device Object
+        ModernRoboticsI2cIrSeekerSensorV3  irSeekerV;
+        I2cDevice       irSeekerVDevice;
+        I2cDeviceSynch  irSeekerVreader;
 
-        // get a reference to our GyroSensor object.
-        irSeekerV = hardwareMap.irSeekerSensor.get("seekerV");
+        // get a reference to our IR Seeker object.
+        //irSeekerV = hardwareMap.irSeekerSensor.get("seekerV");
 //        irSeekerV.setI2cAddress(I2cAddr.create7bit(0x1E));
-        irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
+        // irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
+        //irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
+
         irSeekerH = hardwareMap.irSeekerSensor.get("seekerH");
+
+        // "complete" solution from Nick Spence for #360, multiple same I2C sensors
+        irSeekerVDevice = hardwareMap.i2cDevice.get("seekerV");
+        irSeekerVreader = new I2cDeviceSynchImpl2(irSeekerVDevice, I2cAddr.create8bit(0x0), false);
+        irSeekerV = new ModernRoboticsI2cIrSeekerSensorV3(irSeekerVreader);
+
 
         // wait for the start button to be pressed.
         waitForStart();
+
+        setI2cAddress(irSeekerV, 0x42);  // "complete" solution from Nick Spence for #360, multiple same I2C sensors
 
         while (opModeIsActive())  {
 
