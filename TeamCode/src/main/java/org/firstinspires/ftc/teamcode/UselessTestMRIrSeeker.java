@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 
 /*
@@ -84,7 +85,7 @@ public class UselessTestMRIrSeeker extends LinearOpMode {
 
         // "complete" solution from Nick Spence for #360, multiple same I2C sensors
         irSeekerVDevice = hardwareMap.i2cDevice.get("seekerV");
-        irSeekerVreader = new I2cDeviceSynchImpl2(irSeekerVDevice, I2cAddr.create8bit(0x0), false);
+        irSeekerVreader = new I2cDeviceSynchImpl(irSeekerVDevice, I2cAddr.create8bit(0x0), false);  // was I2cDeviceSynchImpl2
         irSeekerV = new ModernRoboticsI2cIrSeekerSensorV3(irSeekerVreader);
 
 

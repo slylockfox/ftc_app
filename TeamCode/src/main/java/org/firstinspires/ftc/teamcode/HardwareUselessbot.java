@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -124,7 +125,7 @@ public class HardwareUselessbot
 
         // "complete" solution from Nick Spence for #360, multiple same I2C sensors
         irSeekerVDevice = hwMap.i2cDevice.get("seekerV");
-        irSeekerVreader = new I2cDeviceSynchImpl2(irSeekerVDevice, I2cAddr.create8bit(0x0), false);
+        irSeekerVreader = new I2cDeviceSynchImpl(irSeekerVDevice, I2cAddr.create8bit(0x0), false); // was I2cDeviceSynchImpl2
         irSeekerV = new ModernRoboticsI2cIrSeekerSensorV3(irSeekerVreader);
 
         // one IR sensor has had address changed
