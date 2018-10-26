@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IrSeekerSensor;
 import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.Range;
 
@@ -85,12 +86,6 @@ public class UselessbotTeleop extends OpMode{
         double left;
         double right;
 
-        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
-        left = -gamepad1.left_stick_y;
-        right = -gamepad1.right_stick_y;
-        robot.leftMotor.setPower(left);
-        robot.rightMotor.setPower(right);
-
         // Use gamepad left & right Bumpers to swivel
         if (gamepad1.right_bumper)
             robot.swivelServo.setPower(ARM_RIGHT_POWER);
@@ -116,11 +111,19 @@ public class UselessbotTeleop extends OpMode{
             shoulderTime = getRuntime();
         }
 
+        // use Start button to switch the IR seekers, because sometimes they get backwards
+        else if (gamepad1.start) {
+            robot.swapSeekers = !robot.swapSeekers;
+        }
+
         // no buttons; check for IR
-        else if (robot.irSeekerH.signalDetected()) {
+        else if (robot.seekerH().signalDetected()) {
             robot.swivelServo.setPower(robot.IRMovementH());
-            if (robot.irSeekerV.signalDetected() && getRuntime() > shoulderTime + shoulderTimeDelay) {
-                robot.shoulderServo.setPosition(shoulderPos += robot.IRMovementV() * shoulderInc);
+            if (robot.seekerV().signalDetected() && getRuntime() > shoulderTime + shoulderTimeDelay) {
+                shoulderPos += robot.IRMovementV() * shoulderInc;
+                shoulderPos = Math.min(shoulderPos, 0.2d);
+                shoulderPos = Math.max(shoulderPos, 0.1d);
+                robot.shoulderServo.setPosition(shoulderPos);
                 shoulderTime = getRuntime();
             }
         }
@@ -129,13 +132,37 @@ public class UselessbotTeleop extends OpMode{
             robot.swivelServo.setPower(ARM_STOP_POWER);
         }
 
+        // Run wheels in tank mode (note: The joystick goes negative when pushed forwards, so negate it)
+        left = -gamepad1.left_stick_y;
+        right = -gamepad1.right_stick_y;
+        if (Math.abs(left) < .1 && Math.abs(right) < .1) { // no driver controls, so follow IR beacon slowly
+            double strengthH = robot.seekerH().getStrength();
+            if (strengthH > 0.05d && strengthH < 0.2d && robot.armPosition() > 32.0d && robot.armPosition() < 37.0d) {
+                left = 0.3;
+                right = 0.3;
+                if (robot.armPosition() > 35) {
+                    left += .2;
+                }
+                if (robot.armPosition() < 33) {
+                    right += .2;
+                }
+            }
+        }
+        robot.leftMotor.setPower(left);
+        robot.rightMotor.setPower(right);
+
+
         // Send telemetry message to signify robot running;
-        telemetry.addData("AngleH",    robot.irSeekerH.getAngle());
+        telemetry.addData("Swap Seekers", robot.swapSeekers);
+        telemetry.addData("AngleH",    robot.seekerH().getAngle());
+        telemetry.addData("AngleV",    robot.seekerV().getAngle());
+        telemetry.addData("StrengthH",    robot.seekerH().getStrength());
         telemetry.addData("PercentRot", "percent: " + Double.toString(robot.armPosition()));
         telemetry.addData("left",  "%.2f", left);
         telemetry.addData("right", "%.2f", right);
         telemetry.addData("encoders",  "%7d - %7d",
                 robot.leftMotor.getCurrentPosition(), robot.rightMotor.getCurrentPosition());
+        // telemetry.addData("shoulder", "%.2f", robot.shoulderServo.getPosition());
         updateTelemetry(telemetry);
     }
 
