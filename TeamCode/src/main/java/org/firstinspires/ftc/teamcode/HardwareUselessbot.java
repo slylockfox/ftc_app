@@ -42,7 +42,7 @@ public class HardwareUselessbot
     public ModernRoboticsI2cRangeSensor rangeSensor = null;
     private IrSeekerSensor irSeekerH;
     private IrSeekerSensor irSeekerV;
-    public boolean swapSeekers = true;
+    public boolean swapSeekers = false;
     private I2cDeviceSynch irSeekerVreader;
     public static final double PUSHER_RETRACT   =  0.5 ;
     public static final double PUSHER_EXTEND   =  0.2 ;
@@ -74,6 +74,7 @@ public class HardwareUselessbot
 
     public IrSeekerSensor seekerH() {if (swapSeekers) return irSeekerV; else return irSeekerH;}
     public IrSeekerSensor seekerV() {if (swapSeekers) return irSeekerH; else return irSeekerV;}
+    public void toggleSeekerSwap() {swapSeekers = !swapSeekers;}
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
@@ -115,11 +116,13 @@ public class HardwareUselessbot
         //colorSensor.enableLed(false);
 
         //solution per Nick Spence for issue #360 and two IR sensors with different addresses
-        irSeekerVreader = hwMap.i2cDeviceSynch.get("seekerV");
-        irSeekerV = new ModernRoboticsI2cIrSeekerSensorV3(irSeekerVreader);
-        irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
+        // note synchronous device seems to be depracated, but there's no other way to get two IR seekers
+//        irSeekerVreader = hwMap.i2cDeviceSynch.get("seekerV");
+//        irSeekerV = new ModernRoboticsI2cIrSeekerSensorV3(irSeekerVreader);
 
         irSeekerH = hwMap.irSeekerSensor.get("seekerH");
+        irSeekerV = hwMap.irSeekerSensor.get("seekerV");
+        irSeekerH.setI2cAddress(I2cAddr.create8bit(0x42));
 
     }
 

@@ -71,13 +71,16 @@ public class UselessTestMRIrSeeker extends LinearOpMode {
 
         //solution per Nick Spence and issue #360
 
-        irSeekerVreader = hardwareMap.i2cDeviceSynch.get("seekerV");
-        irSeekerV = new ModernRoboticsI2cIrSeekerSensorV3(irSeekerVreader);
-        irSeekerV.setI2cAddress(I2cAddr.create8bit(0x42));
+//        irSeekerVreader = hardwareMap.i2cDeviceSynch.get("seekerV");
+//        irSeekerV = new ModernRoboticsI2cIrSeekerSensorV3(irSeekerVreader);
+
+        // new solution: use two separate interface modules
+        irSeekerV = hardwareMap.irSeekerSensor.get("seekerV");
+        irSeekerH = hardwareMap.irSeekerSensor.get("seekerH");
+        irSeekerH.setI2cAddress(I2cAddr.create8bit(0x42));
 
 //        irSeekerV.setI2cAddress(I2cAddr.create7bit(0x1E));
 
-        irSeekerH = hardwareMap.irSeekerSensor.get("seekerH");
 
         // wait for the start button to be pressed.
         waitForStart();

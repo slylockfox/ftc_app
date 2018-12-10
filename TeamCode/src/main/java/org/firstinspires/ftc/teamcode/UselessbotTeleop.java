@@ -85,6 +85,7 @@ public class UselessbotTeleop extends OpMode{
     public void loop() {
         double left;
         double right;
+        boolean toggleSeekerSwap = false;
 
         // Use gamepad left & right Bumpers to swivel
         if (gamepad1.right_bumper)
@@ -111,9 +112,12 @@ public class UselessbotTeleop extends OpMode{
             shoulderTime = getRuntime();
         }
 
-        // use Start button to switch the IR seekers, because sometimes they get backwards
-        else if (gamepad1.start) {
-            robot.swapSeekers = !robot.swapSeekers;
+        // use Start-X to switch the IR seekers, because sometimes they get backwards
+        else if (gamepad1.start && gamepad1.x) {
+            toggleSeekerSwap = true;
+        }
+        else if (toggleSeekerSwap) {
+            robot.toggleSeekerSwap();
         }
 
         // no buttons; check for IR
@@ -137,13 +141,13 @@ public class UselessbotTeleop extends OpMode{
         right = -gamepad1.right_stick_y;
         if (Math.abs(left) < .1 && Math.abs(right) < .1) { // no driver controls, so follow IR beacon slowly
             double strengthH = robot.seekerH().getStrength();
-            if (strengthH > 0.05d && strengthH < 0.2d && robot.armPosition() > 32.0d && robot.armPosition() < 37.0d) {
+            if (strengthH > 0.05d && strengthH < 0.2d && robot.armPosition() > 31.0d && robot.armPosition() < 38.0d) {
                 left = 0.3;
                 right = 0.3;
                 if (robot.armPosition() > 35) {
                     left += .2;
                 }
-                if (robot.armPosition() < 33) {
+                if (robot.armPosition() < 34) {
                     right += .2;
                 }
             }
