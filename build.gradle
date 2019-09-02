@@ -9,13 +9,13 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.4.1'
     }
 }
 
-allprojects { /* MJS: see https://github.com/ftctechnh/ftc_app/pull/581#issuecomment-425650576 */
 // This is now required because aapt2 has to be downloaded from the
 // google() repository beginning with version 3.2 of the Android Gradle Plugin
+allprojects {
     repositories {
         google()
         jcenter()
